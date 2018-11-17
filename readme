@@ -1,2 +1,18 @@
 Jacob Bennert (jbenne06)
 Jared Hwang (jhwang11)
+
+Our project will be Tic-Tac-Toe, using speech recognition to input game commands. Since our new
+technology is speech recognition, the program needs to be able to recognize basic input commands.
+The nine basic commands it needs to be able to recognize are:
+
+  Top Left
+  Top Middle
+  Top Right
+  Middle Left
+  Middle
+  Middle Right
+  Bottom Left
+  Bottom Middle
+  Bottom Right
+  
+We tested these commands with our feasibility program and they all worked successfully.
