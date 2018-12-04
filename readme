@@ -15,5 +15,15 @@ The nine basic commands it needs to be able to recognize are:
   Bottom Middle
   Bottom Right
   
-We tested these commands with our feasibility program and they all worked 
-successfully.
+We tested these commands with our feasibility program and they all worked successfully.
+
+
+To run the feasibility test, run "python3 main.py"
+
+REQUIRED TECHNOLOGY
+Python 3
+PyQt5
+speech_recognition python module
+vlc
+Google Speech recognition API
+PyAudio
