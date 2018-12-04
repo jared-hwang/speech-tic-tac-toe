@@ -6,9 +6,9 @@ from PyQt5.QtCore import Qt
 
 class Canvas(QWidget):
 
-    def __init__(self, parent=None):
-        super(Canvas, self).__init__(parent)
-        self.resize(600, 400)
+    def __init__(self):
+        super().__init__()
+        self.resize(1000, 400)
 
     def paintEvent(self, event):
         painter = QPainter(self)

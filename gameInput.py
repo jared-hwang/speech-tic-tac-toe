@@ -26,6 +26,24 @@ class gameInput(object):
         except sr.RequestError as e:
             print("Could not request results from Google Speech Recognition service; {0}".format(e))
 
+        if not acceptableInput(self._r.recognize_google(audio)):
+            print("That is not an acceptable input. Please say again")
+            return False
+        else:
+            return self._r.recognize_google(audio)
+
+
+
     def promptUser(self):
         player2 = vlc.MediaPlayer("makeMove.mp3")
         player2.play()
+
+    def acceptableInput(self, input):
+        acceptable = ["top left", "top center", "top right",
+                      "center left", "center", "center right",
+                      "bottom left", "bottom center", "center right"]
+
+        if input not in acceptable:
+            return False
+        else:
+            return True
