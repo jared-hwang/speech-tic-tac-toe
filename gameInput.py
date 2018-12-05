@@ -1,6 +1,7 @@
 import speech_recognition as sr
 import vlc
 import time
+import simpleaudio as sa
 
 class gameInput(object):
     
@@ -8,29 +9,38 @@ class gameInput(object):
         self._r = sr.Recognizer()
 
 
-    def acceptInput(self):
-        time.sleep(1.5)
+    def acceptInput(self, canvas):
+
+        # canvas.swapGoLight()
+        # canvas.repaint()
+
+
         with sr.Microphone() as source:
             print("Say something!")
             audio = self._r.listen(source)
 
         print("Parsing...")
 
+        # self._canvas.swapGoLight()
+        # self._canvas.repaint()
+
         # recognize speech using Google Speech Recognition
         try:
             print("You said: " + self._r.recognize_google(audio))
-            return self._r.recognize_google(audio)
+            # return self._r.recognize_google(audio)
         except sr.UnknownValueError:
             print("We could not recognize the audio")
             return False
         except sr.RequestError as e:
             print("Could not request results from Google Speech Recognition service; {0}".format(e))
+            return False
 
-        if not acceptableInput(self._r.recognize_google(audio)):
+
+        if self.acceptableInput(self._r.recognize_google(audio).lower()):
+            return self._r.recognize_google(audio).lower()
+        else:
             print("That is not an acceptable input. Please say again")
             return False
-        else:
-            return self._r.recognize_google(audio)
 
 
 
@@ -39,11 +49,11 @@ class gameInput(object):
         player2.play()
 
     def acceptableInput(self, input):
-        acceptable = ["top left", "top center", "top right",
-                      "center left", "center", "center right",
-                      "bottom left", "bottom center", "center right"]
+        acceptable = ["red", "yellow", "blue",
+                      "purple", "pink", "white",
+                      "turquoise", "green", "orange"]
 
-        if input not in acceptable:
-            return False
-        else:
+        if input in acceptable:
             return True
+        else:
+            return False
