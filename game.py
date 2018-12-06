@@ -51,9 +51,11 @@ class Game(QtWidgets.QMainWindow):
     def keyPressEvent(self, e):
         if e.key() == Qt.Key_Return:
             if (self._gameActive):
-                self._canvas.swapGoLight()
                 self.acceptInput()
             else:
+                self.resetGame()
+
+        if e.key() == Qt.Key_Space:
                 self.resetGame()
 
         
@@ -85,7 +87,13 @@ class Game(QtWidgets.QMainWindow):
             self._canvas._AIIcon = 1
 
     def tie(self):
-        self._resultLabel.setText("It's a tie!!")
+
+        self._resultLabel.setGeometry(20, 40, 500, 400)
+        self._resultLabel.setFont(QFont('Comic Sans MS', 40))
+        self._resultLabel.setText("It's a tie!!\nGo back to main window and enter to play again")
+        self._resultLabel.setWordWrap(True)
+        self._resultLabel.setAlignment(Qt.AlignCenter)
+        
         palette = self._resultsScreen.palette()
         palette.setColor(self._resultsScreen.backgroundRole(), QColor(87, 92, 255))
 
@@ -97,9 +105,14 @@ class Game(QtWidgets.QMainWindow):
 
 
     def win(self):
-        self._resultLabel.setText("You win!!!")
-        palette = self._resultsScreen.palette()
 
+        self._resultLabel.setGeometry(20, 40, 500, 400)
+        self._resultLabel.setFont(QFont('Comic Sans MS', 40))
+        self._resultLabel.setText("You win!!!\nGo back to main window and enter to play again")
+        self._resultLabel.setWordWrap(True)
+        self._resultLabel.setAlignment(Qt.AlignCenter)
+
+        palette = self._resultsScreen.palette()
         palette.setColor(self._resultsScreen.backgroundRole(), QColor(87, 255, 98))
 
         self._resultLabel.setStyleSheet('color: blue')
@@ -111,9 +124,9 @@ class Game(QtWidgets.QMainWindow):
 
     def lose(self):
         self._resultLabel.setGeometry(20, 40, 500, 400)
-        self._resultLabel.setFont(QFont('Comic Sans MS', 50))
+        self._resultLabel.setFont(QFont('Comic Sans MS', 40))
 
-        self._resultLabel.setText("I don't know how... but you lose!")
+        self._resultLabel.setText("I don't know how... but you lose!\nGo back to main window and enter to play again")
         self._resultLabel.setWordWrap(True)
         self._resultLabel.setAlignment(Qt.AlignCenter)
 
@@ -128,6 +141,9 @@ class Game(QtWidgets.QMainWindow):
 
 
     def acceptInput(self):
+
+        if (self._canvas._goLight == False):
+            self._canvas.swapGoLight()
 
         userInput = self._microphone.acceptInput(self._canvas)
         

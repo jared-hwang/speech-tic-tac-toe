@@ -20,7 +20,7 @@ class Canvas(QWidget):
 
         self._game_started = False
 
-        self._goLight = False
+        self._goLight = True
 
     def paintEvent(self, event):
         painter = QPainter(self)
