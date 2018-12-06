@@ -32,7 +32,7 @@ class Board(object):
         winState = self.checkWinState(self.PLAYER_MOVE);
         return winState;
 
-    def doAITurn(self, index):
+    def doAITurn(self):
         self.counterMove();
         winState = self.checkWinState(self.AI_MOVE);
         return winState;
@@ -97,6 +97,11 @@ class Board(object):
                 self.checkRowForPossibleWin(space, symbol)):
                 self.aiMove(space);
                 return True;
+            elif (space == 4):
+                if (self.checkLeftDiagonalForPossibleWin(space, symbol) or
+                    self.checkRightDiagonalForPossibleWin(space, symbol)):
+                    self.aiMove(space);
+                    return True;
             elif (space % 4 == 0):
                 if (self.checkLeftDiagonalForPossibleWin(space, symbol)):
                     self.aiMove(space);
@@ -180,9 +185,9 @@ class Board(object):
             otherTwoSpaces.append(self._board[space - 4]);
         if (space - 2 > 1):
             otherTwoSpaces.append(self._board[space - 2]);
-        if (space + 2 < 8):
+        if (space + 2 < 7):
             otherTwoSpaces.append(self._board[space + 2]);
-        if (space + 4 < 8):
+        if (space + 4 < 7):
             otherTwoSpaces.append(self._board[space + 4]);
 
         if (otherTwoSpaces[0] == symbol and otherTwoSpaces[1] == symbol):
