@@ -1,6 +1,15 @@
+# Jake Bennert (jbenne06) and Jared Hwang (jhwang11)
+# COMP 86 Final Project
+
+# board.py
+#
+# Contains the data representation of the board.
+# Translates the player's move onto the board.
+# Performs the AI's move and translates that onto the board.
+# Checks to see if anyone has won after each move.
+
 import sys
 import random
-import time
 
 class Board(object):
     # Constants
@@ -25,7 +34,6 @@ class Board(object):
             self._availableMoves.append(i);
 
     def doPlayerTurn(self, index):
-        # check to see if the input is legal
         if (self._board[index] != self.UNPLAYED_SPACE):
             return self.INVALID_INDEX;
 
@@ -204,9 +212,8 @@ class Board(object):
         return self._board;
 
     def clearBoard(self):
-        # for space in self._board:
-        #     space = self.UNPLAYED_SPACE;
-        self._board = [-1, -1, -1, -1, -1, -1, -1, -1, -1]
+        for space in self._board:
+            space = self.UNPLAYED_SPACE;
 
         self._availableMoves = [];
         for i in range(9):
