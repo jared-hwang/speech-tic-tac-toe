@@ -1,3 +1,8 @@
+# Jared Hwang (jhwang11) Jacob Bennert (jbenne06)
+# gameInput.py
+#
+# Contains the microphone and methods to accept user input via speech 
+
 import speech_recognition as sr
 import vlc
 import time

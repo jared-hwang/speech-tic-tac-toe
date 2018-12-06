@@ -19,6 +19,7 @@ class iconSelect(QtWidgets.QMainWindow):
         
         self._clicked = False
 
+
     def initUI(self):               
         self.setGeometry(300, 300, 300, 140)
         self.setWindowTitle('Pick an Icon!')
@@ -32,6 +33,10 @@ class iconSelect(QtWidgets.QMainWindow):
         button2.move(170,50) 
         button2.setFixedSize(60, 50)
         button2.clicked.connect(self.picked_o)
+
+
+        self._instructionLabel = QtWidgets.QLabel("Press 'Enter' in game to say your turn", self)
+        self._instructionLabel.setGeometry(40, 20, 400, 40)   
 
         self.show()
 

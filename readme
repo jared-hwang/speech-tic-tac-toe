@@ -1,29 +1,95 @@
 Jacob Bennert (jbenne06)
 Jared Hwang (jhwang11)
 
-Our project will be Tic-Tac-Toe, using speech recognition to input game commands. Since our new
-technology is speech recognition, the program needs to be able to recognize basic input commands.
-The nine basic commands it needs to be able to recognize are:
-
-  Top Left
-  Top Middle
-  Top Right
-  Middle Left
-  Middle
-  Middle Right
-  Bottom Left
-  Bottom Middle
-  Bottom Right
-  
-We tested these commands with our feasibility program and they all worked successfully.
+Our project is Tic-Tac-Toe, using speech recognition to input game commands. A user can select a space based on color coded tiles.
 
 
-To run the feasibility test, run "python3 main.py"
++--------------------------------------+
+|                                      |
+|               Process                |
+|                                      |
++--------------------------------------+
+
+    We needed to do shifting of what objects own other objects and can call methods of said objects. Mainly, how
+the various UI elements/windows play with each other, as currently there are two window classes instantiated in the 
+game, which holds everything.
+
+    Other than that, mostly our design is the same as in the previous report. Game class holds all the information 
+needed to run a game, such as the board, the canvas, the microphone, etc.. Game class then runs turns and performs
+all the necessary functions.
+
+    Several changes needed to be made in how the user runs the program. Initially, we wanted it to be a running
+loop, where the user can input a turn at any point, and the microphone will pick it up and do the turn. However, as
+described below in UI Design, the asynchronous nature of the microphone input completely invalidated this method.
+The loop that accepts user input would want to complete before updating the canvas, so since it is a running loop,
+the canvas and window would never appear. So, user input had to be changed to a "Press key to enter" entering state
+to circumvent this. This also caused problems with displaying any changes to the board, for example, a delay between
+the computer and player move would not work, as the microphone would accept input, and then display the two computer
+moves at the same time, as both procedures happened asynchronously. 
+
+    The above problem was the largest technical issue. Also, we removed the playing of audio files, as, in addition 
+to the above asynchronous issue, for some reason no audio module we found was able to play multiple audio files and would stop after the first one. We didn't find this feature valuable enough to pursue, so we dropped it.
+
+    We were planning to also have varying AI difficulty levels, but due to time constraints, we could only 
+implement a "medium-smart" AI -- and by AI, it's not really artificial intelligence, but rather hardcoded behavior.
+
+
++--------------------------------------+
+|                                      |
+|            Instructions              |
+|                                      |
++--------------------------------------+
+
+"python3 main.py" to start the game.
+
+Click on a button indicating your icon of choice.
+
+Once in the game, press "Enter" to enter the listening state, and say the color of the tile you would
+like to play. Allowed colors are: red, yellow, blue, purple, white, pink, turquoise, green, orange.
+
+If the light in the top right turns red, that means the turn was not successful and you need to go again.
+
+If it remains green, then you are good to go.
+
+Play until there is a win, tie, or loss, at which point you can exit the game, or go back to the main window
+and press "Enter" to play another one.
+
++--------------------------------------+
+|                                      |
+|              UI Design               |
+|                                      |
++--------------------------------------+
+
+THE GOOD
+
+    Using color coded tiles makes it abundantly clear which tile you are selecting at a given time, without
+ambiguity based on position of the space.
+
+    Given the latency associated with speech recognition, a user can activate a "listening state", and observe 
+a "good/bad" light in the top right to indicate if their move was succesful.
+
+    It is abundantly clear when you've won/lost/tied.
+
+THE BAD
+
+    It can be disorienting to perform a turn, as both moves appear at the same time. 
+
+    The user has to activate a "listening" state in order to submit a move.
+
+    It could be more clear to the user that it's their turn, or they can speak, or its not their turn etc.
+
+    The light in the corner was supposed to flash when it was the user's turn, or it was "okay" to start speaking. 
+    The reason this doesn't happen comes down to the asynchronous microphone problem.
+
+    All of these problems stem from the asynchronous nature of the microphone input, as any change in the canvas
+    would appear entirely after the microphone takes input, barring any dynamic change in the canvas while the 
+    microphone is listening.
+
 
 REQUIRED TECHNOLOGY
 Python 3
 PyQt5
 speech_recognition python module
-vlc
 Google Speech recognition API
-PyAudio
+simpleaudio
+
