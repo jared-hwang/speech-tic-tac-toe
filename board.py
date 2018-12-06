@@ -23,18 +23,16 @@ class Board(object):
         for i in range(9):
             self._availableMoves.append(i);
 
-    def doTurn(self, index):
-        # index = 3 * row + column;
-
+    def doPlayerTurn(self, index):
         # check to see if the input is legal
         if (self._board[index] != self.UNPLAYED_SPACE):
             return self.INVALID_INDEX;
 
         self.playerMove(index);
         winState = self.checkWinState(self.PLAYER_MOVE);
-        if (winState != self.CONTINUE_GAME):
-            return winState;
+        return winState;
 
+    def doAITurn(self, index):
         self.counterMove();
         winState = self.checkWinState(self.AI_MOVE);
         return winState;
@@ -198,3 +196,11 @@ class Board(object):
 
     def getBoard(self):
         return self._board;
+
+    def clearBoard(self):
+        for space in self._board:
+            space = self.UNPLAYED_SPACE;
+
+        self._availableMoves = [];
+        for i in range(9):
+            self._availableMoves.append(i);
