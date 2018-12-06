@@ -1,7 +1,7 @@
 import sys
 import random
 
-class Board:
+class Board(object):
     # Constants
     UNPLAYED_SPACE = -1;
     AI_MOVE        =  0;
@@ -23,8 +23,8 @@ class Board:
         for i in range(9):
             self._availableMoves.append(i);
 
-    def doTurn(self, row, column):
-        index = 3 * row + column;
+    def doTurn(self, index):
+        # index = 3 * row + column;
 
         # check to see if the input is legal
         if (self._board[index] != self.UNPLAYED_SPACE):

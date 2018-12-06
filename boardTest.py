@@ -6,10 +6,10 @@ def main():
     myBoard = Board();
 
     while (not gameOver):
-        row = int(input("Row:"));
-        column = int(input("Column:"));
+        row = int(input("index:"));
+        # column = int(input("Column:"));
 
-        winState = Board.doTurn(myBoard, row, column);
+        winState = Board.doTurn(myBoard, row);
         board = Board.getBoard(myBoard);
 
         for i in range(9):

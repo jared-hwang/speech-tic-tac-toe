@@ -1,5 +1,6 @@
 from gameInput import gameInput
 from canvas import Canvas
+from board import Board
 import sys
 import time
 from PyQt5.Qt import QColor
@@ -31,6 +32,8 @@ class Game(QtWidgets.QMainWindow):
         self._canvas = Canvas(self)
         self.setCentralWidget(self._canvas) 
 
+        self._gameBoard = Board()
+
         self._resultsScreen = QtWidgets.QWidget()
         self._resultLabel = QtWidgets.QLabel("It's a tie!", self._resultsScreen)
         self._resultLabel.setGeometry(100, 40, 330, 300)
@@ -46,7 +49,6 @@ class Game(QtWidgets.QMainWindow):
     def keyPressEvent(self, e):
         if e.key() == Qt.Key_Return:
             self._canvas.swapGoLight()
-            time.sleep(3)
             self.acceptInput()
         
 
@@ -133,18 +135,46 @@ class Game(QtWidgets.QMainWindow):
     def acceptInput(self):
 
         userInput = self._microphone.acceptInput(self._canvas)
+        
         if not userInput:
             self._canvas.swapGoLight()
             return
 
+        turnResult = self._gameBoard.doTurn(self._colorKeys[userInput])
 
-        board = [-1,-1,-1,-1,-1,-1,-1,-1,-1]
-        board[self._colorKeys[userInput]] = 1
+        if (turnResult == -1):
+            print("You can't go there, it's already taken!")
+            self._canvas.swapGoLight()
+            return
+
+        board = self._gameBoard.getBoard()
         self._canvas.setBoard(board)
-
         self._canvas.repaint()
+
+        if (turnResult == 0):
+            self.lose()
+            # exit(0)
+        elif (turnResult == 1):
+            self.win()
+            # exit(0)
+        elif (turnResult == 2):
+            self.tie()
+            # exit(0)
+
+
+
+        # board = [-1,-1,-1,-1,-1,-1,-1,-1,-1]
+        # board[self._colorKeys[userInput]] = 1
+        # self._canvas.setBoard(board)
+
+        # self._canvas.repaint()
+
+
+
         # self._canvas.swapGoLight()
         # self._canvas.repaint()
+
+        
         # result = board(userInput)
 
         # if (result):
