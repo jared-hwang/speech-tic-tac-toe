@@ -1,5 +1,6 @@
 import sys
 import random
+import time
 
 class Board(object):
     # Constants
@@ -32,7 +33,7 @@ class Board(object):
         winState = self.checkWinState(self.PLAYER_MOVE);
         return winState;
 
-    def doAITurn(self, index):
+    def doAITurn(self):
         self.counterMove();
         winState = self.checkWinState(self.AI_MOVE);
         return winState;
@@ -198,8 +199,9 @@ class Board(object):
         return self._board;
 
     def clearBoard(self):
-        for space in self._board:
-            space = self.UNPLAYED_SPACE;
+        # for space in self._board:
+        #     space = self.UNPLAYED_SPACE;
+        self._board = [-1, -1, -1, -1, -1, -1, -1, -1, -1]
 
         self._availableMoves = [];
         for i in range(9):

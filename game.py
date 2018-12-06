@@ -42,15 +42,40 @@ class Game(QtWidgets.QMainWindow):
         palette = self._resultsScreen.palette()
         palette.setColor(self._resultsScreen.backgroundRole(), QColor(0, 0, 0))
 
+        self._gameActive = True
+
         self._colorKeys = {"red": 0, "yellow": 1, "blue": 2,
                            "purple": 3, "white":4 , "pink": 5,
                            "turquoise": 6, "green": 7, "orange": 8}
 
     def keyPressEvent(self, e):
         if e.key() == Qt.Key_Return:
-            self._canvas.swapGoLight()
-            self.acceptInput()
+            if (self._gameActive):
+                self._canvas.swapGoLight()
+                self.acceptInput()
+            else:
+                self.resetGame()
+
         
+    def resetGame(self):
+        #board clear
+        self._gameBoard.clearBoard()
+
+        board = self._gameBoard.getBoard()
+        self._canvas.setBoard(board)
+        self._canvas.repaint()
+
+        self._resultsScreen.close()
+        self._gameActive = True
+
+        # self._canvas.close()
+        # self._canvas = Canvas(self)
+        # self.setCentralWidget(self._canvas)
+
+        # board = self._gameBoard.getBoard()
+        # self._canvas.setBoard(board)
+        # self._canvas.repaint()
+
 
     def setPlayerIcon(self, icon):
         self._canvas._playerIcon = icon
@@ -58,33 +83,6 @@ class Game(QtWidgets.QMainWindow):
             self._canvas._AIIcon = 0
         else:
             self._canvas._AIIcon = 1
-
-
-    def run(self):
-
-        while(True):
-            userInput = self._microphone.acceptInput()
-            
-            while(userInput == False):
-                userInput = self._microphone.acceptInput()
-                break
-
-            # result = board(userInput)
-
-            # if (result):
-            #     # you win!!!
-            #     break
-
-            # elif (result == False):
-            #     # you lose!!!
-            #     break
-
-            # elif ('''tie condition'''): 
-            #     # its a tie!!!
-            #     break
-
-            # else:
-        exit()
 
     def tie(self):
         self._resultLabel.setText("It's a tie!!")
@@ -95,15 +93,7 @@ class Game(QtWidgets.QMainWindow):
         self._resultsScreen.setPalette(palette)
         self._resultsScreen.show()
 
-
-        # wave_obj = sa.WaveObject.from_wave_file("makeMove.wav")
-        # play_obj = wave_obj.play()
-        # play_obj.wait_done()
-
-
-        # wave_obj = sa.WaveObject.from_wave_file("badInput.wav")
-        # play_obj = wave_obj.play()
-        # play_obj.wait_done()
+        self._gameActive = False
 
 
     def win(self):
@@ -115,6 +105,9 @@ class Game(QtWidgets.QMainWindow):
         self._resultLabel.setStyleSheet('color: blue')
         self._resultsScreen.setPalette(palette)
         self._resultsScreen.show()
+
+
+        self._gameActive = False
 
     def lose(self):
         self._resultLabel.setGeometry(20, 40, 500, 400)
@@ -131,6 +124,8 @@ class Game(QtWidgets.QMainWindow):
         self._resultsScreen.setPalette(palette)
         self._resultsScreen.show()
 
+        self._gameActive = False
+
 
     def acceptInput(self):
 
@@ -140,7 +135,7 @@ class Game(QtWidgets.QMainWindow):
             self._canvas.swapGoLight()
             return
 
-        turnResult = self._gameBoard.doTurn(self._colorKeys[userInput])
+        turnResult = self._gameBoard.doPlayerTurn(self._colorKeys[userInput])
 
         if (turnResult == -1):
             print("You can't go there, it's already taken!")
@@ -153,15 +148,29 @@ class Game(QtWidgets.QMainWindow):
 
         if (turnResult == 0):
             self.lose()
-            # exit(0)
+            return
         elif (turnResult == 1):
             self.win()
-            # exit(0)
+            return
         elif (turnResult == 2):
             self.tie()
-            # exit(0)
+            return
 
+        turnResult = self._gameBoard.doAITurn()
 
+        board = self._gameBoard.getBoard()
+        self._canvas.setBoard(board)
+        self._canvas.repaint()
+
+        if (turnResult == 0):
+            self.lose()
+            return
+        elif (turnResult == 1):
+            self.win()
+            return
+        elif (turnResult == 2):
+            self.tie()
+            return
 
         # board = [-1,-1,-1,-1,-1,-1,-1,-1,-1]
         # board[self._colorKeys[userInput]] = 1
