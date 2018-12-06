@@ -1,5 +1,5 @@
 import sys
-from random import *
+import random
 
 class Board:
     # Constants
@@ -13,16 +13,15 @@ class Board:
     TIE           =  2;
     CONTINUE_GAME =  3;
 
-    # Attributes
-    _board[9];
-    _availableMoves[9];
-
     def __init__(self):
-        for space in self._board:
-            space = -1;
+        self._board = [];
+        self._availableMoves = [];
 
         for i in range(9):
-            self._availableMoves[i] = i;
+            self._board.append(-1);
+
+        for i in range(9):
+            self._availableMoves.append(i);
 
     def doTurn(self, row, column):
         index = 3 * row + column;
@@ -32,12 +31,12 @@ class Board:
             return self.INVALID_INDEX;
 
         self.playerMove(index);
-        winState = checkWinState(PLAYER_MOVE);
+        winState = self.checkWinState(self.PLAYER_MOVE);
         if (winState != self.CONTINUE_GAME):
             return winState;
 
         self.counterMove();
-        winState = checkWinState(AI_MOVE);
+        winState = self.checkWinState(self.AI_MOVE);
         return winState;
 
     def playerMove(self, index):
@@ -45,12 +44,12 @@ class Board:
         self._availableMoves.remove(index);
 
     def aiMove(self, index):
-        self._board[index] = AI_MOVE;
+        self._board[index] = self.AI_MOVE;
         self._availableMoves.remove(index);
 
     def checkWinState(self, symbol):
-        if (self.checkColumnForWin(symbol) ||
-            self.checkRowForWin(symbol)    ||
+        if (self.checkColumnForWin(symbol) or
+            self.checkRowForWin(symbol)    or
             self.checkDiagonalForWin(symbol)):
             return symbol;
         elif (len(self._availableMoves) == 0):
@@ -60,79 +59,80 @@ class Board:
 
     def checkColumnForWin(self, symbol):
         board = self._board;
-        if ((board[0] == symbol && board[3] == symbol && board[6] == symbol) ||
-            (board[1] == symbol && board[4] == symbol && board[7] == symbol) ||
-            (board[2] == symbol && board[5] == symbol && board[8] == symbol)):
+        if ((board[0] == symbol and board[3] == symbol and board[6] == symbol)
+            or
+            (board[1] == symbol and board[4] == symbol and board[7] == symbol)
+            or
+            (board[2] == symbol and board[5] == symbol and board[8] == symbol)):
             return True;
         else:
             return False;
 
     def checkRowForWin(self, symbol):
         board = self._board;
-        if ((board[0] == symbol && board[1] == symbol && board[2] == symbol) ||
-            (board[3] == symbol && board[4] == symbol && board[5] == symbol) ||
-            (board[6] == symbol && board[7] == symbol && board[8] == symbol)):
+        if ((board[0] == symbol and board[1] == symbol and board[2] == symbol)
+            or
+            (board[3] == symbol and board[4] == symbol and board[5] == symbol)
+            or
+            (board[6] == symbol and board[7] == symbol and board[8] == symbol)):
             return True;
         else:
             return False;
 
     def checkDiagonalForWin(self, symbol):
         board = self._board;
-        if ((board[0] == symbol && board[4] == symbol && board[8] == symbol) ||
-            (board[2] == symbol && board[4] == symbol && board[6] == symbol)):
+        if ((board[0] == symbol and board[4] == symbol and board[8] == symbol)
+            or
+            (board[2] == symbol and board[4] == symbol and board[6] == symbol)):
             return True;
         else:
             return False;
 
     def counterMove(self):
-        if (!self.checkForPossibleWin()):
-            self.makeRegularMove();
+        if (not self.checkForPossibleWin(self.AI_MOVE)):
+            if (not self.checkForPossibleWin(self.PLAYER_MOVE)):
+                self.makeRegularMove();
 
-    def checkForPossibleWin(self):
+    def checkForPossibleWin(self, symbol):
         for space in self._availableMoves:
-            if (self.checkColumnForPossibleWin(space) ||
-                self.checkRowForPossibleWin(space)):
+            if (self.checkColumnForPossibleWin(space, symbol) or
+                self.checkRowForPossibleWin(space, symbol)):
                 self.aiMove(space);
                 return True;
             elif (space % 4 == 0):
-                if (self.checkLeftDiagonalForPossibleWin(space)):
+                if (self.checkLeftDiagonalForPossibleWin(space, symbol)):
                     self.aiMove(space);
                     return True;
             elif (space % 4 == 2):
-                if (self.checkRightDiagonalForPossibleWin(space)):
+                if (self.checkRightDiagonalForPossibleWin(space, symbol)):
                     self.aiMove(space);
                     return True;
 
         return False;
 
-    def checkColumnForPossibleWin(self, space):
-        otherTwoSpaces[2];
-        i = 0;
+    def checkColumnForPossibleWin(self, space, symbol):
+        otherTwoSpaces = [];
 
         if (space - 6 > -1):
-            otherTwoSpaces[i] = self._board[space - 6];
-            i++;
+            otherTwoSpaces.append(self._board[space - 6]);
         if (space - 3 > -1):
-            otherTwoSpaces[i] = self._board[space - 3];
-            i++;
+            otherTwoSpaces.append(self._board[space - 3]);
         if (space + 3 < 9):
-            otherTwoSpaces[i] = self._board[space + 3];
-            i++;
+            otherTwoSpaces.append(self._board[space + 3]);
         if (space + 6 < 9):
-            otherTwoSpaces[i] = self._board[space + 6];
+            otherTwoSpaces.append(self._board[space + 6]);
 
-        if (otherTwoSpaces[0] == otherTwoSpaces[1]):
+        if (otherTwoSpaces[0] == symbol and otherTwoSpaces[1] == symbol):
             return True;
         else:
             return False;
 
-    def checkRowForPossibleWin(self, space):
-        otherTwoSpaces[2];
-        i = 0;
+    def checkRowForPossibleWin(self, space, symbol):
+        otherTwoSpaces = [];
 
         lowerLimit = 0;
         upperLimit = 0;
-        spaceQuotient = space / 3;
+        spaceQuotient = space // 3;
 
         if (spaceQuotient == 0):
             lowerLimit = -1;
@@ -145,60 +145,49 @@ class Board:
             upperLimit = 9;
 
         if (space - 2 > lowerLimit):
-            otherTwoSpaces[i] = self._board[space - 2];
-            i++;
+            otherTwoSpaces.append(self._board[space - 2]);
         if (space - 1 > lowerLimit):
-            otherTwoSpaces[i] = self._board[space - 1];
-            i++;
+            otherTwoSpaces.append(self._board[space - 1]);
         if (space + 1 < upperLimit):
-            otherTwoSpaces[i] = self._board[space + 1];
-            i++;
+            otherTwoSpaces.append(self._board[space + 1]);
         if (space + 2 < upperLimit):
-            otherTwoSpaces[i] = self._board[space + 2];
+            otherTwoSpaces.append(self._board[space + 2]);
 
-        if (otherTwoSpaces[0] == otherTwoSpaces[1]):
+        if (otherTwoSpaces[0] == symbol and otherTwoSpaces[1] == symbol):
             return True;
         else:
             return False;
 
-    def checkLeftDiagonalForPossibleWin(self, space):
-        otherTwoSpaces[2];
-        i = 0;
+    def checkLeftDiagonalForPossibleWin(self, space, symbol):
+        otherTwoSpaces = [];
 
         if (space - 8 > -1):
-            otherTwoSpaces[i] = self._board[space - 8];
-            i++;
+            otherTwoSpaces.append(self._board[space - 8]);
         if (space - 4 > -1):
-            otherTwoSpaces[i] = self._board[space - 4];
-            i++;
+            otherTwoSpaces.append(self._board[space - 4]);
         if (space + 4 < 9):
-            otherTwoSpaces[i] = self._board[space + 4];
-            i++;
+            otherTwoSpaces.append(self._board[space + 4]);
         if (space + 8 < 9):
-            otherTwoSpaces[i] = self._board[space + 8];
+            otherTwoSpaces.append(self._board[space + 8]);
 
-        if (otherTwoSpaces[0] == otherTwoSpaces[1]):
+        if (otherTwoSpaces[0] == symbol and otherTwoSpaces[1] == symbol):
             return True;
         else:
             return False;
 
-    def checkRightDiagonalForPossibleWin(self, space):
-        otherTwoSpaces[2];
-        i = 0;
+    def checkRightDiagonalForPossibleWin(self, space, symbol):
+        otherTwoSpaces = [];
 
-        if (space - 4 > -1):
-            otherTwoSpaces[i] = self._board[space - 4];
-            i++;
-        if (space - 2 > -1):
-            otherTwoSpaces[i] = self._board[space - 2];
-            i++;
-        if (space + 2 < 9):
-            otherTwoSpaces[i] = self._board[space + 2];
-            i++;
-        if (space + 4 < 9):
-            otherTwoSpaces[i] = self._board[space + 4];
+        if (space - 4 > 1):
+            otherTwoSpaces.append(self._board[space - 4]);
+        if (space - 2 > 1):
+            otherTwoSpaces.append(self._board[space - 2]);
+        if (space + 2 < 8):
+            otherTwoSpaces.append(self._board[space + 2]);
+        if (space + 4 < 8):
+            otherTwoSpaces.append(self._board[space + 4]);
 
-        if (otherTwoSpaces[0] == otherTwoSpaces[1]):
+        if (otherTwoSpaces[0] == symbol and otherTwoSpaces[1] == symbol):
             return True;
         else:
             return False;
